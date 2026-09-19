@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { monthRange, monthStartISO, parseMonthParam, totalsByCategory } from "@/lib/finance";
 import type { Budget, Category, Transaction } from "@/lib/types";
@@ -21,6 +22,9 @@ export default async function BudgetsPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  // Pages render in parallel with the layout — guard here, the layout's
+  // redirect doesn't stop this page from executing.
+  if (!user) redirect("/login");
 
   const [{ data: budgets }, { data: cats }, { data: txns }, { data: profile }] =
     await Promise.all([
