@@ -1,0 +1,8 @@
+project_id = "personal-expence-tracker"
+
+[auth]
+# Email confirmations off for local dev — signup logs in instantly.
+enable_confirmations = false
+
+[auth.email]
+enable_confirmations = false
