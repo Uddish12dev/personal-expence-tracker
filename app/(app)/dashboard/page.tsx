@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import {
   monthRange,
@@ -24,6 +25,9 @@ export default async function DashboardPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  // Pages render in parallel with the layout, so guard here too —
+  // the layout's redirect doesn't stop this page from executing.
+  if (!user) redirect("/login");
 
   const now = new Date();
   const cur = monthRange(now);
@@ -47,7 +51,7 @@ export default async function DashboardPage() {
       supabase
         .from("profiles")
         .select("full_name, currency")
-        .eq("user_id", user!.id)
+        .eq("id", user.id)
         .single(),
     ]);
 
